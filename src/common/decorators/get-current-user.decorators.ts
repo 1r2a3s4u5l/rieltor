@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   createParamDecorator,
 } from '@nestjs/common';
-import { JwtPayloadWidthRefreshToken } from '../../rieltor/types/jwtpayloadRefresh';
+import { JwtPayloadWidthRefreshToken } from '../../auth/types/jwtpayloadRefresh';
 
 export const GetCurrentUser = createParamDecorator(
   (

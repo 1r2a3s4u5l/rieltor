@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { RieltorModule } from './rieltor/rieltor.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     PrismaModule,
-    RieltorModule,
+    AuthModule,
     
   ],
   controllers: [],

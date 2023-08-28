@@ -11,37 +11,37 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { RieltorService } from './rieltor.service';
-import { RieltorDto } from './dto';
+import { AuthService } from './auth.service';
+import { AuthDto } from './dto';
 import { Tokens } from './types';
 import { Response } from 'express';
 import { GetCurrentUser, GetCurrentUserId, Public } from '../common/decorators';
 import { RefreshTokenGuard } from '../common/guards';
 
-@Controller('rieltor')
-export class RieltorController {
-  constructor(private readonly rieltorService: RieltorService) {}
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(
-    @Body() rieltorDto: RieltorDto,
+    @Body() authDto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Tokens> {
     console.log(1);
 
-    return this.rieltorService.signup(rieltorDto, res);
+    return this.authService.signup(authDto, res);
   }
 
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   async signin(
-    @Body() rieltorDto: RieltorDto,
+    @Body() authDto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Tokens> {
-    return this.rieltorService.signin(rieltorDto, res);
+    return this.authService.signin(authDto, res);
   }
 
   @Post('signout')
@@ -50,7 +50,7 @@ export class RieltorController {
     @GetCurrentUserId() userId: number,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Boolean> {
-    return this.rieltorService.signout(userId, res);
+    return this.authService.signout(userId, res);
   }
 
   @Public()
@@ -62,6 +62,6 @@ export class RieltorController {
     @GetCurrentUser('refreshToken') refreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Tokens> {
-    return this.rieltorService.refreshTokens(userId, refreshToken, res);
+    return this.authService.refreshTokens(userId, refreshToken, res);
   }
 }

@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   createParamDecorator,
 } from '@nestjs/common';
-import { JwtPayload } from '../../rieltor/types';
+import { JwtPayload } from '../../auth/types';
 
 export const GetCurrentUserId = createParamDecorator(
   (_: undefined, context: ExecutionContext): number => {

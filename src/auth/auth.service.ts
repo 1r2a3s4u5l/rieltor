@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { RieltorDto } from './dto/rieltor.dto';
+import { AuthDto } from './dto/auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
@@ -11,25 +11,25 @@ import * as bcrypt from 'bcrypt';
 import { JwtPayload, Tokens } from './types';
 
 @Injectable()
-export class RieltorService {
+export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
   ) {}
 
-  async signup(rieltorDto: RieltorDto, res: Response) {
-    const candidate = await this.prismaService.rieltor.findUnique({
+  async signup(authDto: AuthDto, res: Response) {
+    const candidate = await this.prismaService.auth.findUnique({
       where: {
-        email: rieltorDto.email,
+        email: authDto.email,
       },
     });
     if (candidate) {
       throw new BadRequestException('Bunday email mavjud');
     }
-    const hashedPassword = await bcrypt.hash(rieltorDto.password, 7);
-    const newUser = await this.prismaService.rieltor.create({
+    const hashedPassword = await bcrypt.hash(authDto.password, 7);
+    const newUser = await this.prismaService.auth.create({
       data: {
-        email: rieltorDto.email,
+        email: authDto.email,
         hashedPassword,
       },
     });
@@ -42,10 +42,10 @@ export class RieltorService {
     return tokens;
   }
 
-  async signin(rieltorDto: RieltorDto, res: Response): Promise<Tokens> {
-    const { email, password } = rieltorDto;
+  async signin(authDto: AuthDto, res: Response): Promise<Tokens> {
+    const { email, password } = authDto;
 
-    const user = await this.prismaService.rieltor.findUnique({
+    const user = await this.prismaService.auth.findUnique({
       where: { email },
     });
     if (!user) throw new ForbiddenException('Access Denied');
@@ -63,7 +63,7 @@ export class RieltorService {
   }
 
   async signout(userId: number, res: Response): Promise<boolean> {
-    const user = await this.prismaService.rieltor.updateMany({
+    const user = await this.prismaService.auth.updateMany({
       where: {
         id: userId,
         hashedRefreshToken: {
@@ -84,7 +84,7 @@ export class RieltorService {
     refreshToken: string,
     res: Response,
   ): Promise<Tokens> {
-    const user = await this.prismaService.rieltor.findUnique({
+    const user = await this.prismaService.auth.findUnique({
       where: {
         id: userId,
       },
@@ -112,7 +112,7 @@ export class RieltorService {
     refreshToken: string,
   ): Promise<void> {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 7);
-    await this.prismaService.rieltor.update({
+    await this.prismaService.auth.update({
       where: {
         id: userId,
       },
